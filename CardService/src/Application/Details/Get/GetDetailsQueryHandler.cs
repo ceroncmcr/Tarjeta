@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using AutoMapper;
 using Shared;
 
 namespace Application.Details.Get;
@@ -7,10 +8,15 @@ namespace Application.Details.Get;
 internal sealed class GetDetailsQueryHandler : IQueryHandler<GetDetailsQuery, DetailsResponse>
 {
     private readonly IDetailsQuery _detailsQuery;
+    private readonly IMapper _mapper;
 
-    public GetDetailsQueryHandler(IDetailsQuery detailsQuery)
+    public GetDetailsQueryHandler(
+        IDetailsQuery detailsQuery,
+        IMapper mapper
+    )
     {
         _detailsQuery = detailsQuery;
+        _mapper = mapper;
     }
     public async Task<Result<DetailsResponse>> Handle(GetDetailsQuery request, CancellationToken cancellationToken)
     {
@@ -21,19 +27,6 @@ internal sealed class GetDetailsQueryHandler : IQueryHandler<GetDetailsQuery, De
             return Result.Failure<DetailsResponse>(new Error("1", "No se encontro el numero de tarjeta", ErrorType.NotFound));
         }
 
-        //TODO: Add AutoMapper
-        var detailsResponse = new DetailsResponse
-        {
-            Name = details.Name,
-            CardNumber = details.CardNumber,
-            CurrentBalance = details.CurrentBalance,
-            Limit = details.Limit,
-            AvailableBalance = details.AvailableBalance,
-            BonusableInterets = details.BonusableInterets,
-            MinPaymentDue = details.MinPaymentDue,
-            PaymentWithInterest = details.PaymentWithInterest
-        };
-
-        return detailsResponse;
+        return _mapper.Map<DetailsResponse>(details);
     }
 }

@@ -1,4 +1,6 @@
 using Application;
+using Application.Abstractions.Mapping;
+using AutoMapper;
 using Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+var mappingConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new ApplicationMapping());
+});
+IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();

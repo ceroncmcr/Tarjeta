@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
-using Application.Transactions.Purchase.Get;
+using AutoMapper;
 using Shared;
 
 namespace Application.Transactions.Purchase.Create;
@@ -8,22 +8,20 @@ namespace Application.Transactions.Purchase.Create;
 internal sealed class CreatePurchaseCommandHandler : ICommandHandler<CreatePurchaseCommand, CreatePurchaseResponse>
 {
     private readonly ITransactionCommand _transactionCommand;
+    private readonly IMapper _mapper;
 
-    public CreatePurchaseCommandHandler(ITransactionCommand transactionCommand)
+    public CreatePurchaseCommandHandler(
+        ITransactionCommand transactionCommand,
+        IMapper mapper
+    )
     {
         _transactionCommand = transactionCommand;
+        _mapper = mapper;
     }
 
     public async Task<Result<CreatePurchaseResponse>> Handle(CreatePurchaseCommand request, CancellationToken cancellationToken)
-    {
-        //TODO: Add Automapper
-        var purchase = new Domain.Transactions.Purchase
-        {
-            Amount = request.Amount,
-            card_number = request.CardNumber,
-            Description = request.Description,
-            payment_date = request.PaymentDate
-        };
+    {        
+        var purchase = _mapper.Map<Domain.Transactions.Purchase>(request);
 
         var id = await _transactionCommand.CreatePurchase(purchase);
 

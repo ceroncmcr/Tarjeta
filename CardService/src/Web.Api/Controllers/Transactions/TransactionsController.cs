@@ -3,6 +3,7 @@ using Application.Transactions.Histories;
 using Application.Transactions.Payment.Create;
 using Application.Transactions.Purchase.Create;
 using Application.Transactions.Purchase.Get;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using System.Text.Json;
@@ -15,10 +16,15 @@ namespace Web.Api.Controllers.Transactions;
 public class TransactionsController : BaseApiController
 {
     private readonly ILogger<DetailsController> _logger;
+    private readonly IMapper _mapper;
 
-    public TransactionsController(ILogger<DetailsController> logger)
+    public TransactionsController(
+        ILogger<DetailsController> logger,
+        IMapper mapper
+    )
     {
         _logger = logger;
+        _mapper = mapper;
     }
     
     [HttpGet("purchase/{cardnumber}")]
@@ -58,9 +64,8 @@ public class TransactionsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<CreatePurchaseResponse>))]
     public async Task<IResult> CreatePurchase([FromBody] PurchaseRequest request)
-    {
-        //TODO: Add AutoMapper
-        var command = new CreatePurchaseCommand { CardNumber = request.CardNumber, PaymentDate = request.PaymentDate, Amount = request.Amount, Description = request.Description };
+    {        
+        var command = _mapper.Map<CreatePurchaseCommand>(request);
 
         _logger.LogInformation(JsonSerializer.Serialize(command));
 
@@ -76,8 +81,7 @@ public class TransactionsController : BaseApiController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
     public async Task<IResult> CreatePayment([FromBody] PaymentRequest request)
     {
-        //TODO: Add AutoMapper
-        var command = new CreatePaymentCommand { CardNumber = request.CardNumber, PaymentDate = request.PaymentDate, Amount = request.Amount };
+        var command = _mapper.Map<CreatePaymentCommand>(request);        
 
         _logger.LogInformation(JsonSerializer.Serialize(command));
 
@@ -88,9 +92,6 @@ public class TransactionsController : BaseApiController
     }
 
 
-
-
-    //TODO: endpoint post payment
     //TODO: endpoint get accountstatement to pdf
     //TODO: enpoint post purchasetoexcel
 

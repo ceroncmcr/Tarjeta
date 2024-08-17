@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
-using Application.Details.Get;
+using AutoMapper;
 using Shared;
 
 namespace Application.Transactions.Purchase.Get;
@@ -8,10 +8,15 @@ namespace Application.Transactions.Purchase.Get;
 internal sealed class GetPurchaseQueryHandler : IQueryHandler<GetPurchaseQuery, IEnumerable<PurchaseResponse>>
 {
     private readonly ITransactionQuery _transactionQuery;
+    private readonly IMapper _mapper;
 
-    public GetPurchaseQueryHandler(ITransactionQuery transactionQuery)
+    public GetPurchaseQueryHandler(
+        ITransactionQuery transactionQuery,
+        IMapper mapper    
+    )
     {
         _transactionQuery = transactionQuery;
+        _mapper = mapper;
     }
     public async Task<Result<IEnumerable<PurchaseResponse>>> Handle(GetPurchaseQuery request, CancellationToken cancellationToken)
     {
@@ -22,20 +27,6 @@ internal sealed class GetPurchaseQueryHandler : IQueryHandler<GetPurchaseQuery, 
             return Result.Failure<IEnumerable<PurchaseResponse>>(new Error("404", "No se encontraron registros", ErrorType.NotFound));
         }
 
-        //TODO: Add automapper
-        var response = new List<PurchaseResponse>();
-        foreach (var purchase in purchases)
-        {
-            response.Add(new PurchaseResponse
-            {
-                CardNumber = purchase.card_number,
-                PaymentDate = purchase.payment_date,
-                Amount = purchase.Amount,
-                Description = purchase.Description,
-                TransactionType = purchase.transaction_type
-            });
-        }
-
-        return response;
+        return _mapper.Map<List<PurchaseResponse>>(purchases);        
     }
 }
