@@ -28,7 +28,7 @@ internal sealed class CreatePurchaseCommandHandler : ICommandHandler<CreatePurch
         var id = await _transactionCommand.CreatePurchase(purchase);
 
         if (id <= 0) {            
-            return Result.Failure<CreatePurchaseResponse>(new Error("500", "Ocurrio un error al crear la compra", ErrorType.Failure));
+            return Result.Failure<CreatePurchaseResponse>(new Error("500", "Ocurrio un error al realizar la compra", ErrorType.Failure));
         }
 
         return new CreatePurchaseResponse {  Id = id };

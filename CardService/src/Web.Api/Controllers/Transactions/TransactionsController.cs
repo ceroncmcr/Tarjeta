@@ -1,5 +1,6 @@
 ﻿using Application.Details.Get;
 using Application.Transactions.Histories;
+using Application.Transactions.Payment.Create;
 using Application.Transactions.Purchase.Create;
 using Application.Transactions.Purchase.Get;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ public class TransactionsController : BaseApiController
     [HttpGet("purchase/{cardnumber}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<IEnumerable<PurchaseResponse>>))]
     public async Task<IResult> GetPurchase([FromRoute] string CardNumber, [FromQuery] int Month)
     {
         var query = new GetPurchaseQuery { CardNumber = CardNumber, Month = Month };
@@ -39,7 +40,7 @@ public class TransactionsController : BaseApiController
     [HttpGet("history/{cardnumber}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<IEnumerable<HistoryResponse>>))]
     public async Task<IResult> GetHistory([FromRoute] string CardNumber, [FromQuery] int Month)
     {
         var query = new GetHistoryQuery { CardNumber = CardNumber, Month = Month };
@@ -55,7 +56,7 @@ public class TransactionsController : BaseApiController
     [HttpPost("purchase")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<CreatePurchaseResponse>))]
     public async Task<IResult> CreatePurchase([FromBody] PurchaseRequest request)
     {
         //TODO: Add AutoMapper
@@ -69,10 +70,26 @@ public class TransactionsController : BaseApiController
 
     }
 
+    [HttpPost("payment")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    public async Task<IResult> CreatePayment([FromBody] PaymentRequest request)
+    {
+        //TODO: Add AutoMapper
+        var command = new CreatePaymentCommand { CardNumber = request.CardNumber, PaymentDate = request.PaymentDate, Amount = request.Amount };
+
+        _logger.LogInformation(JsonSerializer.Serialize(command));
+
+        Result<CreatePaymentResponse> result = await Mediator.Send(command);
+
+        return result.Match(Results.Ok, CustomResults.Problem);
+
+    }
 
 
 
-    //TODO: endpoint post purchase    
+
     //TODO: endpoint post payment
     //TODO: endpoint get accountstatement to pdf
     //TODO: enpoint post purchasetoexcel
