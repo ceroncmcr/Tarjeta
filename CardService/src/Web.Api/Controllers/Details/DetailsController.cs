@@ -17,10 +17,9 @@ public class DetailsController : BaseApiController
 
     [HttpGet("{cardnumber}")]
     [Produces("application/json")]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(GenericResponse))]
-    //[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(GenericResponse))]
-    //[ProducesResponseType(typeof(ObjectResponse<InformacionTarjeta>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetInfoTarjeta([FromRoute] string cardnumber)
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]    
+    public async Task<IResult> GetInfoTarjeta([FromBody] string cardnumber)
     {
         var query = new GetDetailsQuery { CardNumber = cardnumber };
         

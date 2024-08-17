@@ -18,9 +18,10 @@ internal sealed class GetDetailsQueryHandler : IQueryHandler<GetDetailsQuery, De
 
         if (details is null)
         {
-            return Result.Failure<DetailsResponse>(new Error("1", "No se encontro el numero de tarjeta", ErrorType.Failure));
+            return Result.Failure<DetailsResponse>(new Error("1", "No se encontro el numero de tarjeta", ErrorType.NotFound));
         }
 
+        //TODO: Add AutoMapper
         var detailsResponse = new DetailsResponse
         {
             Name = details.Name,
