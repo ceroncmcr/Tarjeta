@@ -1,4 +1,5 @@
 ﻿using Application.Details.Get;
+using Application.Transactions.AccountStatement;
 using Application.Transactions.Histories;
 using Application.Transactions.Payment.Create;
 using Application.Transactions.Purchase.Create;
@@ -86,6 +87,22 @@ public class TransactionsController : BaseApiController
         _logger.LogInformation(JsonSerializer.Serialize(command));
 
         Result<CreatePaymentResponse> result = await Mediator.Send(command);
+
+        return result.Match(Results.Ok, CustomResults.Problem);
+
+    }
+
+    [HttpGet("accountstatement/{cardnumber}")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    public async Task<IResult> GetAccountStatement([FromRoute] string CardNumber, [FromQuery] int Month)
+    {
+        var query = new GetAccountStatementQuery { CardNumber = CardNumber, Month = Month };
+
+        _logger.LogInformation(JsonSerializer.Serialize(query));
+
+        Result<AccountStatementResponse> result = await Mediator.Send(query);
 
         return result.Match(Results.Ok, CustomResults.Problem);
 

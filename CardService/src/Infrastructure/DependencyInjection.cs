@@ -1,6 +1,8 @@
 ﻿using Application.Abstractions.Data;
+using Application.Abstractions.Documents;
 using Infrastructure.Database;
 using Infrastructure.Details;
+using Infrastructure.Documents;
 using Infrastructure.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +16,8 @@ public static class DependencyInjection
         services.AddScoped<IDetailsQuery, DetailsQuery>();
         services.AddScoped<ITransactionQuery, TransactionQuery>();
         services.AddScoped<ITransactionCommand, TransactionCommand>();
+
+        services.AddScoped<ICreateDocument, CreateDocument>();
 
     }
 }
