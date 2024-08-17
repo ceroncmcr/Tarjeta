@@ -4,6 +4,7 @@ using Application.Transactions.Histories;
 using Application.Transactions.Payment.Create;
 using Application.Transactions.Purchase.Create;
 using Application.Transactions.Purchase.Get;
+using Application.Transactions.Purchase.ToExcel;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
@@ -108,8 +109,23 @@ public class TransactionsController : BaseApiController
 
     }
 
+    [HttpGet("purchase-to-excel/{cardnumber}")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    public async Task<IResult> GetPurchaseToExcel([FromRoute] string CardNumber, [FromQuery] int Month)
+    {
+        var query = new GetPurchaseToExcelQuery { CardNumber = CardNumber, Month = Month };
 
-    //TODO: endpoint get accountstatement to pdf
+        _logger.LogInformation(JsonSerializer.Serialize(query));
+
+        Result<PurchaseToExcelResponse> result = await Mediator.Send(query);
+
+        return result.Match(Results.Ok, CustomResults.Problem);
+
+    }
+
+
     //TODO: enpoint post purchasetoexcel
 
 }
