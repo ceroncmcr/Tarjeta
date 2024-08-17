@@ -1,4 +1,5 @@
 ﻿using Application.Details.Get;
+using Application.Transactions.Histories;
 using Application.Transactions.Purchase;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
@@ -17,8 +18,7 @@ public class TransactionsController : BaseApiController
     {
         _logger = logger;
     }
-
-    //TODO: endpoint get purchase
+    
     [HttpGet("purchase")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -35,9 +35,27 @@ public class TransactionsController : BaseApiController
 
     }
 
+    //TODO: endpoint get history
+    [HttpGet("history/{cardnumber}")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    public async Task<IResult> GetHistory([FromRoute] string CardNumber, [FromQuery] int Month)
+    {
+        var query = new GetHistoryQuery { CardNumber = CardNumber, Month = Month };
+
+        _logger.LogInformation(JsonSerializer.Serialize(query));
+
+        Result<IEnumerable<HistoryResponse>> result = await Mediator.Send(query);
+
+        return result.Match(Results.Ok, CustomResults.Problem);
+
+    }
+
+
     //TODO: endpoint post purchase    
     //TODO: endpoint post payment
-    //TODO: endpoint get history
+
     //TODO: enpoint post purchasetoexcel
     //TODO: endpoint get accountstatement
 }

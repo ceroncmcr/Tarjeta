@@ -1,7 +1,6 @@
 ﻿using Application.Abstractions.Data;
 using Dapper;
 using Domain.Details;
-using Infrastructure.Database;
 
 namespace Infrastructure.Details;
 public class DetailsQuery : IDetailsQuery
@@ -13,11 +12,11 @@ public class DetailsQuery : IDetailsQuery
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<DetailsCard> GetDetailsCard(string NumeroTarjeta)
+    public async Task<DetailsCard> GetDetailsCard(string CardNumber)
     {
-        var _query = "exec details_card @NumeroTarjeta";
+        var _query = "exec details_card @CardNumber";
         var connection = _applicationDbContext.GetConnectionSqlServer();
-        var details = await connection.QueryFirstOrDefaultAsync<DetailsCard>(_query, new { NumeroTarjeta });        
+        var details = await connection.QueryFirstOrDefaultAsync<DetailsCard>(_query, new { CardNumber });        
         return details;
     }
 

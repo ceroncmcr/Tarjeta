@@ -19,7 +19,7 @@ internal sealed class GetPurchaseQueryHandler : IQueryHandler<GetPurchaseQuery, 
 
         if (!purchases.Any())
         {
-            return Result.Failure<IEnumerable<PurchaseResponse>>(new Error("1", "No se encontraron registros", ErrorType.NotFound));
+            return Result.Failure<IEnumerable<PurchaseResponse>>(new Error("404", "No se encontraron registros", ErrorType.NotFound));
         }
 
         //TODO: Add automapper
