@@ -3,7 +3,8 @@ import { getTransactionHistory } from '@/app/lib/data';
 import { formatCurrency } from '@/app/lib/utils';
 
 export default async function TransactionsHistoryTable() {
-  const histories = await getTransactionHistory("123456789012");  
+  const histories = await getTransactionHistory("123456789012");
+  console.log(histories);  
   return (
     <div className="w-full">
       <h1 className=' mb-8 text-xl md:text-2xl'>
@@ -32,8 +33,8 @@ export default async function TransactionsHistoryTable() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-200 text-gray-900">
-                  {histories.value.map((history) => (
-                    <tr key={history.cardNumber} className="group">                      
+                  {histories.value.map((history, i) => (
+                    <tr key={i} className="group">                      
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         { moment(history.paymentDate).format("DD-MM-YYYY HH:mm:ss") } 
                       </td>

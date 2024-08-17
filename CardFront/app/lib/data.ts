@@ -22,7 +22,7 @@ export async function getDetailsCard(cardNumber: string): Promise<BaseResponse<D
 
 export async function getTransactionPurchases(cardNumber: string): Promise<BaseResponse<PurchaseResponse[]>> {
   const month = new Date().getMonth();
-  const res = await fetch(`http://localhost:5044/api/v1/transactions/purchase/${ cardNumber }?Month=${ month + 1 }`, { cache: 'no-cache' });
+  const res = await fetch(`${ BASE_URL }/transactions/purchase/${ cardNumber }?Month=${ month + 1 }`, { cache: 'no-cache' });
   const json = await res.json();
 
   return json;
@@ -30,10 +30,8 @@ export async function getTransactionPurchases(cardNumber: string): Promise<BaseR
 
 export async function getTransactionHistory(cardNumber: string): Promise<BaseResponse<HistoryResponse[]>> {
   const month = new Date().getMonth();
-  const res = await fetch(`http://localhost:5044/api/v1/transactions/history/${ cardNumber }?Month=${ month + 1 }`, { cache: 'no-cache' });
-  const json = await res.json();
-
-  console.log(json);
+  const res = await fetch(`${ BASE_URL }/transactions/history/${ cardNumber }?Month=${ month + 1 }`, { cache: 'no-cache' });
+  const json = await res.json();  
 
   return json;
 }

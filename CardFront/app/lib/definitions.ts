@@ -1,6 +1,6 @@
 
 export interface BaseResponse<T>{
-  status: number;
+  statusCode: number;
   contentType: string;
   value: T
 }
@@ -50,13 +50,13 @@ export interface PurchaseToExcelResponse{
 
 export interface Purchase{
   cardNumber: string;
-  paymentDate: Date;  
+  paymentDate: string;  
   amount: number;
   description: string;
 }
 
 export interface Payment{
   cardNumber: string;
-  paymentDate: Date;  
+  paymentDate: string;  
   amount: number;  
 }

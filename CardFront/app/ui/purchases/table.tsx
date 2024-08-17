@@ -1,14 +1,10 @@
-import Image from 'next/image';
-
-import {
-  PurchaseResponse,
-} from '@/app/lib/definitions';
 import moment from 'moment';
 import { getTransactionPurchases } from '@/app/lib/data';
 import { formatCurrency } from '@/app/lib/utils';
 
 export default async function TransactionsPurchasesTable() {
   const purchases = await getTransactionPurchases("123456789012");  
+  console.log(purchases);
   return (
     <div className="w-full">
       <h1 className=' mb-8 text-xl md:text-2xl'>
@@ -37,8 +33,8 @@ export default async function TransactionsPurchasesTable() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-200 text-gray-900">
-                  {purchases.value.map((purchase) => (
-                    <tr key={purchase.cardNumber} className="group">                      
+                  {purchases.value.map((purchase, i) => (
+                    <tr key={i} className="group">                      
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         { moment(purchase.paymentDate).format("DD-MM-YYYY HH:mm:ss") } 
                       </td>

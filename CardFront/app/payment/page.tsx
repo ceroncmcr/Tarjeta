@@ -1,3 +1,5 @@
+import CreatePaymentForm from "../ui/payment/create-form";
+
 export default function PaymentPage(){
-  return <p>Payment page</p>
+  return <CreatePaymentForm />
 }
