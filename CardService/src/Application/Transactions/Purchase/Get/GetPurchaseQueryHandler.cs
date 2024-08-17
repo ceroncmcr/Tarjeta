@@ -3,7 +3,7 @@ using Application.Abstractions.Messaging;
 using Application.Details.Get;
 using Shared;
 
-namespace Application.Transactions.Purchase;
+namespace Application.Transactions.Purchase.Get;
 
 internal sealed class GetPurchaseQueryHandler : IQueryHandler<GetPurchaseQuery, IEnumerable<PurchaseResponse>>
 {
@@ -35,7 +35,7 @@ internal sealed class GetPurchaseQueryHandler : IQueryHandler<GetPurchaseQuery, 
                 TransactionType = purchase.transaction_type
             });
         }
-        
+
         return response;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Details.Get;
 using Application.Transactions.Histories;
-using Application.Transactions.Purchase;
+using Application.Transactions.Purchase.Create;
+using Application.Transactions.Purchase.Get;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using System.Text.Json;
@@ -19,13 +20,13 @@ public class TransactionsController : BaseApiController
         _logger = logger;
     }
     
-    [HttpGet("purchase")]
+    [HttpGet("purchase/{cardnumber}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
-    public async Task<IResult> GetPurchase([FromQuery] PurchaseRequest request)
+    public async Task<IResult> GetPurchase([FromRoute] string CardNumber, [FromQuery] int Month)
     {
-        var query = new GetPurchaseQuery { CardNumber = request.CardNumber, Month = request.Month };
+        var query = new GetPurchaseQuery { CardNumber = CardNumber, Month = Month };
 
         _logger.LogInformation(JsonSerializer.Serialize(query));
 
@@ -34,8 +35,7 @@ public class TransactionsController : BaseApiController
         return result.Match(Results.Ok, CustomResults.Problem);
 
     }
-
-    //TODO: endpoint get history
+    
     [HttpGet("history/{cardnumber}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -52,10 +52,29 @@ public class TransactionsController : BaseApiController
 
     }
 
+    [HttpPost("purchase")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<DetailsResponse>))]
+    public async Task<IResult> CreatePurchase([FromBody] PurchaseRequest request)
+    {
+        //TODO: Add AutoMapper
+        var command = new CreatePurchaseCommand { CardNumber = request.CardNumber, PaymentDate = request.PaymentDate, Amount = request.Amount, Description = request.Description };
+
+        _logger.LogInformation(JsonSerializer.Serialize(command));
+
+        Result<CreatePurchaseResponse> result = await Mediator.Send(command);
+
+        return result.Match(Results.Ok, CustomResults.Problem);
+
+    }
+
+
+
 
     //TODO: endpoint post purchase    
     //TODO: endpoint post payment
-
+    //TODO: endpoint get accountstatement to pdf
     //TODO: enpoint post purchasetoexcel
-    //TODO: endpoint get accountstatement
+
 }

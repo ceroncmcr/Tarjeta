@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Messaging;
 
-namespace Application.Transactions.Purchase;
+namespace Application.Transactions.Purchase.Get;
 
 public sealed record GetPurchaseQuery : IQuery<IEnumerable<PurchaseResponse>>
 {

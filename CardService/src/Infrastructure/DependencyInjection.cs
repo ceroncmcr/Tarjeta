@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddSingleton<IApplicationDbContext, DbContext>();
         services.AddScoped<IDetailsQuery, DetailsQuery>();
         services.AddScoped<ITransactionQuery, TransactionQuery>();
+        services.AddScoped<ITransactionCommand, TransactionCommand>();
 
     }
 }

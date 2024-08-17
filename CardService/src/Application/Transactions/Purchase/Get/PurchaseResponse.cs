@@ -1,4 +1,4 @@
-﻿namespace Application.Transactions.Purchase;
+﻿namespace Application.Transactions.Purchase.Get;
 
 public class PurchaseResponse
 {
