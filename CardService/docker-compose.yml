@@ -16,6 +16,19 @@ services:
       - "1433:1433"
     volumes:
       - sql_data:/var/opt/mssql
+  # app:
+  #   container_name: card_services
+  #   build:
+  #     dockerfile: ./src/Web.Api/Dockerfile
+  #     context: .
+  #   environment:
+  #     - ASPNETCORE_URLS=http://*:80
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   ports:
+  #     - "5044:80"
+  #   restart: always   
+  #   depends_on:
+  #     - db
 volumes:
   # SQL Server data volume
   sql_data:

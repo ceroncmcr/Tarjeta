@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Text.Json;
-using System.Threading;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Middleware;
 

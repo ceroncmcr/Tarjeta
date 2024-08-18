@@ -1,7 +1,9 @@
 using Application;
 using Application.Abstractions.Mapping;
 using AutoMapper;
+using HealthChecks.UI.Client;
 using Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -21,8 +23,9 @@ IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 builder.Services.AddCors(
     options =>
@@ -48,9 +51,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowCors");
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
-app.UseHttpsRedirection();
+app.UseCors("AllowCors");
 
 app.UseAuthorization();
 
