@@ -4,7 +4,7 @@ import { formatCurrency } from '@/app/lib/utils';
 
 export default async function TransactionsHistoryTable() {
   const histories = await getTransactionHistory("123456789012");
-  console.log(histories);  
+   
   return (
     <div className="w-full">
       <h1 className=' mb-8 text-xl md:text-2xl'>
