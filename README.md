@@ -23,6 +23,22 @@ Luego, navega al directorio del proyecto:
 cd Tarjeta
 ```
 
+## Configuración del Proyecto
+
+Antes de ejecutar el proyecto, es necesario modificar la cadena de conexión en el archivo `appsettings.json` del backend para utilizar tu usuario y contraseña de la base de datos.
+
+1. Navega al archivo `appsettings.json` ubicado en `CardService/src/Web.Api/`.
+2. Abre el archivo y localiza la sección `ConnectionStrings`.
+3. Modifica la propiedad `SqlServerConnection` para incluir tu usuario y contraseña:
+
+```json
+"ConnectionStrings": {
+  "SqlServerConnection": "Data Source=your_server;Initial Catalog=CardDb;User Id=your_user;Password=your_password;TrustServerCertificate=True;"
+}
+```
+
+Reemplaza `your_server`, `your_user`, y `your_password` con los valores correspondientes.
+
 ### Ejecutar el Backend
 
 Para ejecutar la API, asegúrate de tener .NET 6 instalado.
