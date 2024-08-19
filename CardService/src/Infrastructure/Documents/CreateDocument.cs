@@ -1,11 +1,11 @@
 ﻿using Application.Abstractions.Documents;
 using Domain.Transactions;
-using IronXL;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using OfficeOpenXml;
 using System.Globalization;
 
 namespace Infrastructure.Documents;
@@ -64,24 +64,29 @@ public class CreateDocument : ICreateDocument
 
     public async Task<byte[]> CreateDetailsPurchase(string CardNumber, int Month, IEnumerable<Purchase> purchases)
     {
-        WorkBook workBook = WorkBook.Create(ExcelFileFormat.XLSX);
+        using MemoryStream ms = new MemoryStream();
 
-        var sheet = workBook.CreateWorkSheet("Hoja 1");
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-        sheet["A1"].Value = "Fecha";
-        sheet["B1"].Value = "Descripcion";
-        sheet["C1"].Value = "Monto";
-
-        foreach (var purchase in purchases.Select((x, i) => new { value = x, index = i + 2 }))
+        using (var package = new ExcelPackage(ms))
         {
-            DateTime date = purchase.value.payment_date ?? DateTime.Now;
-            sheet["A" + purchase.index].Value = date.ToString("dd/MM/yyyy HH:mm:ss");
-            sheet["B" + purchase.index].Value = purchase.value.Description;
-            sheet["C" + purchase.index].Value = purchase.value.Amount;
+            var sheet = package.Workbook.Worksheets.Add("Hoja 1");            
+            sheet.Cells["A1"].Value = "Fecha";
+            sheet.Cells["B1"].Value = "Descripcion";
+            sheet.Cells["C1"].Value = "Monto";
+
+            foreach (var purchase in purchases.Select((x, i) => new { value = x, index = i + 2 }))
+            {
+                DateTime date = purchase.value.payment_date ?? DateTime.Now;
+                sheet.Cells["A" + purchase.index].Value = date.ToString("dd/MM/yyyy HH:mm:ss");
+                sheet.Cells["B" + purchase.index].Value = purchase.value.Description;
+                sheet.Cells["C" + purchase.index].Value = purchase.value.Amount;
+            }
+            
+            package.Save();
         }
-        sheet.AutoSizeColumn(0);
-        sheet.AutoSizeColumn(1);
-        sheet.AutoSizeColumn(2);
-        return workBook.ToByteArray();
+
+        return ms.ToArray();
     }
+
 }
